@@ -1,7 +1,8 @@
 require "spec_helper"
 
 describe TruiSMS::MessageSplitter do
-  let(:splitter) { TruiSMS::MessageSplitter.new }
+  let(:formatter) { TruiSMS::DefaultFormatter.new }
+  let(:splitter) { TruiSMS::MessageSplitter.new(formatter) }
 
   describe "#split" do
     context "when the message is less than or equal to 160 characters" do
@@ -12,7 +13,7 @@ describe TruiSMS::MessageSplitter do
       end
 
       it "does not split the message" do
-        result[0].text.should == "testing 123"
+        result[0].should have_text("testing 123")
       end
     end
 
@@ -23,9 +24,9 @@ describe TruiSMS::MessageSplitter do
         result.should have(2).messages
       end
 
-      it "splits the messages at 155 characters each with a little text number" do
-        result[0].text.should == ("(1/2) " + ("a" * 154))
-        result[1].text.should == ("(2/2) " + ("a" * 7))
+      it "splits the messages according to the formatter settings" do
+        result[0].should have_text("(1/2) " + ("a" * 154))
+        result[1].should have_text("(2/2) " + ("a" * 7))
       end
     end
   end

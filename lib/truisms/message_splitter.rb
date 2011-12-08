@@ -1,28 +1,35 @@
 module TruiSMS
   class MessageSplitter
-    SPLIT_MESSAGE_LENGTH = 154
+    def initialize(formatter)
+      @formatter = formatter
+    end
 
     def split(text)
-      if text.size > Message::MAX_LENGTH
-        text_array = [text]
-        while text_array[-1].size > SPLIT_MESSAGE_LENGTH
-          t = text_array[-1]
-          text_array[-1] = t[0...SPLIT_MESSAGE_LENGTH]
-          text_array << t[SPLIT_MESSAGE_LENGTH..-1]
-        end
-
-        text_array.map.with_index do |t, i|
-          Message.new(add_text_number(i + 1, text_array.size, t))
-        end
-      else
-        [Message.new(text)]
-      end
+      texts = split_by_length(text, @formatter.max_length(text))
+      format_texts(texts)
     end
 
     private
 
-    def add_text_number(current, total, text)
-      "(#{current}/#{total}) #{text}"
+    def split_by_length(str, length)
+      result = [str]
+      while result[-1].size > length
+        t = result[-1]
+        result[-1] = t[0...length]
+        result << t[length..-1]
+      end
+
+      result
+    end
+
+    def format_texts(texts)
+      total = texts.size
+
+      texts.map.with_index do |text, i|
+        index = i + 1
+        formatted_text = @formatter.format(index, total, text)
+        Message.new(formatted_text)
+      end
     end
   end
 end

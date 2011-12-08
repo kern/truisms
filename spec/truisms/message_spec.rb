@@ -6,7 +6,7 @@ describe TruiSMS::Message do
   describe "#initialize" do
     context "when the message is equal to or less than 160 characters" do
       it "sets the text" do
-        message.text.should == "hey there!"
+        message.should have_text("hey there!")
       end
     end
 
