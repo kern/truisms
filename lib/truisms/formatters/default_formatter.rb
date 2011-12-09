@@ -22,15 +22,15 @@ module TruiSMS
 
       def format_messages(messages)
         total = messages.size
+        raise TruiSMS::MessageTooLongError.new if total > MAX_MESSAGES
 
-        if total > MAX_MESSAGES
-          raise TruiSMS::MessageTooLongError.new
-        else
-          messages.map.with_index do |text, i|
-            index = i + 1
-            "(#{index}/#{total}) #{text}"
-          end
+        messages.map.with_index do |text, i|
+          format_message(i + 1, total, text)
         end
+      end
+
+      def format_message(index, total, text)
+        "(#{index}/#{total}) #{text}"
       end
     end
   end

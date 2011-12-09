@@ -27,5 +27,9 @@ module TruiSMS
 
       result
     end
+
+    def ==(other)
+      text == other.text
+    end
   end
 end

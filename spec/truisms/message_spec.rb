@@ -34,4 +34,14 @@ describe TruiSMS::Message do
       result[1].should == "a" * 30
     end
   end
+
+  describe "#==" do
+    it "returns true if the two messages have the same text" do
+      message.should == TruiSMS::Message.new("hey there!")
+    end
+
+    it "returns false if the two messages have different texts" do
+      message.should_not == TruiSMS::Message.new("nope.")
+    end
+  end
 end
